@@ -3,13 +3,14 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="/styles.css" />
 		<title>New message</title>
 	</head>
 	<body>
 		<h1>New message</h1>
-		<form method="POST" action="/new">
+		<form method="POST" action="/new" id="new-message-form">
 			<label for="message">Message:</label>
-			<input type="text" name="message" />
+			<textarea type="text" name="message"></textarea>
 			<label for="author">Author</label>
 			<input type="text" name="author" />
 			<button type="submit">Submit</button>
