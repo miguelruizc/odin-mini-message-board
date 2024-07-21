@@ -2,7 +2,7 @@ const express = require('express');
 const { messages } = require('./index');
 const { body, validationResult } = require('express-validator');
 
-const validationRules = [
+const formValidation = [
 	body('message')
 		.trim()
 		.matches(/^[a-zA-Z0-9\s.,:;!?(){}[\]'"@#$%^&*+=_/\\-]*$/)
@@ -23,12 +23,20 @@ const router = express.Router();
 
 router.get('/new', (req, res) => {
 	if (req.query.errors) {
-		const errors = JSON.parse(req.query.errors);
-		res.render('new', { errors });
+		try {
+			const errors = JSON.parse(req.query.errors);
+			const sanitized = errors.map((string) =>
+				string.replace(/[^\w\s.,!?]/g, '')
+			);
+			res.render('new', { errors: sanitized });
+		} catch (err) {
+			console.error(err);
+			res.redirect('/');
+		}
 	} else res.status(200).render('new');
 });
 
-router.post('/new', validationRules, (req, res) => {
+router.post('/new', formValidation, (req, res) => {
 	const validationErrors = validationResult(req);
 	if (validationErrors.isEmpty()) {
 		const newMessage = {
