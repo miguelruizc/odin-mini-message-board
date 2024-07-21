@@ -1,10 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Pool } = require('pg');
-
-const pool = new Pool({
-	connectionString: process.env.POSTGRESQL_CONNECTION_URI,
-});
+const pool = require('../db/pool');
 
 router.get('/', async (req, res) => {
 	const messagesRaw = await pool.query('SELECT * FROM messages');

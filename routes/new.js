@@ -1,6 +1,6 @@
 const express = require('express');
-const { messages } = require('./index');
 const { body, validationResult } = require('express-validator');
+const pool = require('../db/pool');
 
 const formValidation = [
 	body('message')
@@ -36,17 +36,22 @@ router.get('/new', (req, res) => {
 	} else res.status(200).render('new');
 });
 
-router.post('/new', formValidation, (req, res) => {
+router.post('/new', formValidation, async (req, res) => {
 	const validationErrors = validationResult(req);
 	if (validationErrors.isEmpty()) {
-		const newMessage = {
-			text: req.body.message,
-			user: req.body.author,
-			added: new Date(),
-		};
+		const text = req.body.message.trim();
+		const author = req.body.author.trim();
 
-		messages.push(newMessage);
-		res.status(201).redirect('/');
+		try {
+			await pool.query(
+				'INSERT INTO messages (text, author) VALUES ($1, $2)',
+				[text, author]
+			);
+			res.status(201).redirect('/');
+		} catch (error) {
+			console.error('Error inserting message: ', error.message);
+			res.status(500).send('Internal server error');
+		}
 	} else {
 		const errors = validationErrors.array().map((error) => error.msg);
 		res.redirect(
