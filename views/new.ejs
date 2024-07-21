@@ -15,5 +15,8 @@
 			<input type="text" name="author" />
 			<button type="submit">Submit</button>
 		</form>
+		<% if(typeof errors !== 'undefined') {%> <% errors.forEach(error => { %>
+		<p style="color: red">·<%= error %></p>
+		<% }) %> <% } %>
 	</body>
 </html>
