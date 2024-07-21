@@ -1,25 +1,17 @@
 const express = require('express');
-
-const messages = [
-	{
-		text: 'Hi there!',
-		user: 'Amando',
-		added: new Date(),
-	},
-	{
-		text: 'Hello World!',
-		user: 'Charles',
-		added: new Date(),
-	},
-];
-
 const router = express.Router();
+const { Pool } = require('pg');
 
-router.get('/', (req, res) => {
+const pool = new Pool({
+	connectionString: process.env.POSTGRESQL_CONNECTION_URI,
+});
+
+router.get('/', async (req, res) => {
+	const messagesRaw = await pool.query('SELECT * FROM messages');
+	const messages = messagesRaw.rows;
 	res.status(200).render('index', { title: 'Messages', messages });
 });
 
 module.exports = {
 	router,
-	messages,
 };

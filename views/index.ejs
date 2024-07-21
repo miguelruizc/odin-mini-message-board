@@ -12,9 +12,8 @@
 			<% messages.forEach((message) => {%>
 			<li>
 				<%= message.text %><br />
-				<%= message.user %><br />
-				<%= message.added.toLocaleDateString() + ' ' +
-				message.added.toLocaleTimeString() %><br />
+				<%= message.author %><br />
+				<%= new Date(message.created_at).toLocaleDateString() %><br />
 			</li>
 			<% }); %>
 		</ul>
